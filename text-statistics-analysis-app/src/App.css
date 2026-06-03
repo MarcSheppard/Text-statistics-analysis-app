@@ -1,0 +1,83 @@
+.content {
+  display: flex;
+  gap: 2rem;
+
+  width: 100%;
+  margin: 2rem auto;
+
+  align-items: flex-start;
+}
+
+.frequencies {
+  width: 15%;
+  flex-shrink: 0;
+}
+
+.results {
+  flex: 1;
+}
+
+.search-result-card {
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+
+  padding: 16px;
+  margin-bottom: 12px;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  
+  font-size: 15px;
+  color: black;
+}
+
+.search-results {
+  width: 100%;
+  margin: 0 auto;
+  float: left;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.frequency-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 500px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 120px 1fr 50px;
+  align-items: center;
+  gap: 12px;
+}
+
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bar-container {
+  height: 24px;
+  background: #f1f5f9;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  background: #3b82f6;
+  border-radius: 6px;
+}
+
+.count {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
