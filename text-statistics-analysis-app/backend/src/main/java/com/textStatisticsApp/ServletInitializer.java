@@ -1,4 +1,4 @@
-package com.textStatisticsApp.TextStatisticsApp;
+package com.textStatisticsApp;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -7,7 +7,7 @@ public class ServletInitializer extends SpringBootServletInitializer {
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(TextStatisticsAppApplication.class);
+		return application.sources(com.textStatisticsApp.TextStatisticsAppApplication.class);
 	}
 
 }
