@@ -1,9 +1,15 @@
 import { useState } from "react";
 import './App.css'
 
+type QueryMark = {
+  start: number;
+  end: number;
+};
+
 type SearchResult = {
   id: number;
   snippet: string;
+  queryMarks: QueryMark[];
 };
 
 type CountEntry = {
@@ -11,81 +17,47 @@ type CountEntry = {
   count: number;
 };
 
-type Counts = {
-  maxCount: number;
-  countEntries: CountEntry[];
-};
+type GeneralSearchStatistics =  {
+  numResults: number;
+  numDocuments: number;
+}
 
-const MOCK_DATA: SearchResult[] = [
-  {
-    id: 1,
-    snippet: "React is a JavaScript library for building user interfaces."
-  },
-  {
-    id: 2,
-    snippet: "Vite provides a fast development experience."
-  },
-  {
-    id: 3,
-    snippet: "TypeScript adds static typing to JavaScript."
-  },
-  {
-    id: 4,
-    snippet: "Search functionality can be mocked during development."
-  },
-  {
-    id: 5,
-    snippet: "Search functionality can be mocked during development."
-  },
-  {
-    id: 6,
-    snippet: "Search functionality can be mocked during development."
-  },
-  {
-    id: 7,
-    snippet: "Search functionality can be mocked during development."
-  },
-  {
-    id: 8,
-    snippet: "Search functionality can be mocked during development."
-  }
-];
+type SearchResults = {
+  generalStatistics: GeneralSearchStatistics;
+  snippets: SearchResult[];
+  characterCounts: CountEntry[];
+  wordCounts: CountEntry[];
+  bigramCounts: CountEntry[];
+  trigramCounts: CountEntry[];
+}
 
-export async function search(query: string): Promise<SearchResult[]> {
-  // temporary implementation
-
-  return MOCK_DATA.filter(item =>
-    item.snippet.toLowerCase().includes(query.toLowerCase())
-  );
+export async function getSearchResults(query: string): Promise<SearchResults> {
+  const response = await fetch(`http://localhost:8080/getResults?query=${encodeURIComponent(query)}`);
+  const data: SearchResults = await response.json();
+  return data;
 }
 
 function App() {
   const [searchText, setSearchText] = useState<string>("");
+  const [searchStatistics, setSearchStatistics] = useState<GeneralSearchStatistics>({
+    numResults: 0,
+    numDocuments: 0
+  });
   const [results, setResults] = useState<SearchResult[]>([]);
-  const [characterCounts, setCharacterCounts] = useState<Counts>({maxCount: 0, countEntries: []});
-  const [wordCounts, setWordCounts] = useState<Counts>({maxCount: 0, countEntries: []});
-  const [chunkCounts, setChunkCounts] = useState<Counts>({maxCount: 0, countEntries: []});
+  const [characterCounts, setCharacterCounts] = useState<CountEntry[]>([]);
+  const [wordCounts, setWordCounts] = useState<CountEntry[]>([]);
+  const [bigramCounts, setBigramCounts] = useState<CountEntry[]>([]);
+  const [trigramCounts, setTrigramCounts] = useState<CountEntry[]>([]);
 
   async function handleSearch() {
-    const found = await search(searchText);
-    setResults(found);
-    setCharacterCounts(getCharacterFrequencies(found[0].snippet));
-    setWordCounts(getCharacterFrequencies(found[0].snippet))
-    setChunkCounts(getCharacterFrequencies(found[0].snippet))
+    const results = await getSearchResults(searchText);
+    setSearchStatistics(results.generalStatistics);
+    setResults(results.snippets);
+    setCharacterCounts(results.characterCounts);
+    setWordCounts(results.wordCounts);
+    setBigramCounts(results.bigramCounts);
+    setTrigramCounts(results.trigramCounts);
   }
-
-  function handleFileChange(
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
-    const selectedFile = event.target.files?.[0];
-
-    if (selectedFile) {
-      // Placeholder for future upload
-      console.log("Selected file:", selectedFile.name);
-    }
-  }
-
-  handleSearch();
 
   return (
     <>
@@ -103,7 +75,8 @@ function App() {
           }}
         />
         <button onClick={handleSearch}>Search</button>
-        <input type="file" onChange={handleFileChange}/>
+        <UploadFile/>
+        <ClearTextDataButton/>
       </section>
       <div className="content">
         <section>
@@ -111,15 +84,27 @@ function App() {
           <FrequencyList counts={characterCounts}/>
           <h2>Word Counts</h2>
           <FrequencyList counts={wordCounts}/>
-          <h2>Chunk Counts</h2>
-          <FrequencyList counts={chunkCounts}/>
+          <h2>Bigram Counts</h2>
+          <FrequencyList counts={bigramCounts}/>
+          <h2>Trigram Counts</h2>
+          <FrequencyList counts={trigramCounts}/>
         </section>
         <section className="results">
+          <SearchStatistics num_results={searchStatistics.numResults} num_documents={searchStatistics.numDocuments} />
           <SearchResults results={results} />
         </section>
       </div>
     </>
   )
+}
+
+function SearchStatistics({ num_results, num_documents }: { num_results: number; num_documents: number; }) {
+  return (
+    <div className="search-results">
+      <div className="search-result-card">{`${num_results} result(s) found`}</div>
+      <div className="search-result-card">{`results in ${num_documents} document(s)`}</div>
+    </div>
+  );
 }
 
 function SearchResults({ results }: { results: SearchResult[]; }) {
@@ -133,31 +118,50 @@ function SearchResults({ results }: { results: SearchResult[]; }) {
 }
 
 function SearchResultCard({ result }: { result: SearchResult; }) {
-  return (
-    <div className="search-result-card">
-      {result.snippet}
-    </div>
-  );
+  const elements: React.ReactNode[] = [];
+  let current = 0;
+  result.queryMarks.forEach((match, index) => {
+    // Text before the highlight
+    if(current < match.start) {
+      elements.push(
+        <span key={`text-${index}`}>
+          {result.snippet.substring(current, match.start)}
+        </span>
+      );
+    }
+    // Highlighted text
+    elements.push(
+      <mark key={`mark-${index}`}>
+        {result.snippet.substring(match.start, match.end)}
+      </mark>
+    );
+    current = match.end;
+  });
+
+  // Remaining text
+  if (current < result.snippet.length) {
+    elements.push(
+      <span key="end">
+        {result.snippet.substring(current)}
+      </span>
+    );
+  }
+  return <div className="search-result-card">{elements}</div>;
 }
 
-function FrequencyList({ counts }: { counts: Counts; }) {
-  const maxCount = Math.max(...counts.countEntries.map((d) => d.count));
-
+function FrequencyList({ counts }: { counts: CountEntry[]; }) {
+  counts.sort((a, b) => b.count - a.count);
+  const maxCount = Math.max(...counts.map((d) => d.count));
   return (
     <div className="frequency-list">
-      {counts.countEntries.map((item) => (
+      {counts.map((item) => (
         <div key={item.label} className="row">
-          <div className="label">{item.label}</div>
-
-          <div className="bar-container">
-            <div
-              className="bar"
-              style={{
-                width: `${(item.count / maxCount) * 100}%`,
-              }}
-            />
+          <div className="label" title={item.label}>
+            {item.label}
           </div>
-
+          <div className="bar-container" title={item.label}>
+            <div className="bar" style={{width: `${(item.count / maxCount) * 100}%`,}}/>
+          </div>
           <div className="count">{item.count}</div>
         </div>
       ))}
@@ -165,37 +169,51 @@ function FrequencyList({ counts }: { counts: Counts; }) {
   );
 }
 
-function getCharacterFrequencies(text: string) {
-  const counts: Counts = {
-    maxCount: 28 + 20 + 14 + 11 + 9,
-    countEntries: []
-  };
+export function UploadFile() {
+  const [file, setFile] = useState<File | null>(null);
 
-  let countEntry: CountEntry = {
-    label: "e",
-    count: 28
-  };
-  counts.countEntries.push(countEntry);
+  async function upload() {
+    if(!file) return;
 
-  let countEntryB: CountEntry = {
-    label: "a",
-    count: 20
-  };
-  counts.countEntries.push(countEntryB);
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await fetch("http://localhost:8080/upload", {
+      method: "POST",
+      body: formData,
+    });
 
-  let countEntryC: CountEntry = {
-    label: "t",
-    count: 14
-  };
-  counts.countEntries.push(countEntryC);
+    if (response.ok) {
+      alert("Upload successful!");
+      setFile(null);
+    } else {
+      alert("Upload failed.");
+    }
+  }
 
-  let countEntryD: CountEntry = {
-    label: "l",
-    count: 9
-  };
-  counts.countEntries.push(countEntryD);
+  return (
+    <>
+      <button onClick={upload} disabled={!file}>Upload</button>
+      <input
+        type="file"
+        accept=".txt"
+        onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+      />
+    </>
+  );
+}
 
-  return counts;
+export function ClearTextDataButton() {
+  async function clear() {
+    const response = await fetch("http://localhost:8080/clear", { method: "GET",});
+
+    if (response.ok) {
+      alert("Text data clear successful!");
+    } else {
+      alert("Text data clear failed.");
+    }
+  }
+
+  return (<button onClick={clear}>Clear text data</button>);
 }
 
 export default App
