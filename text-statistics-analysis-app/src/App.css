@@ -49,6 +49,8 @@
   flex-direction: column;
   gap: 8px;
   width: 500px;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .row {
