@@ -7,18 +7,21 @@ import java.util.regex.Pattern;
 
 public class MockSentenceDao extends SentenceDao
 {
-    List<DocumentSentence> sentenceTable;
+    private List<DocumentSentence> sentenceTable;
 
     public MockSentenceDao() {
         sentenceTable = new ArrayList<>();
     }
 
-    public int addSentence(DocumentSentenceInput sentence) {
+    @Override
+    public int addSentence(final DocumentSentenceInput sentence) {
         DocumentSentence snippet = new DocumentSentence(sentenceTable.size(), sentence.documentId(), sentence.sentence());
         sentenceTable.add(snippet);
         return 1;
     }
-    public int addSentences(List<DocumentSentenceInput> sentences) {
+
+    @Override
+    public int addSentences(final List<DocumentSentenceInput> sentences) {
         for(DocumentSentenceInput sentence : sentences) {
             DocumentSentence snippet = new DocumentSentence(sentenceTable.size(), sentence.documentId(), sentence.sentence());
             sentenceTable.add(snippet);
@@ -26,7 +29,8 @@ public class MockSentenceDao extends SentenceDao
         return 1;
     }
 
-    public List<DocumentSentence> getSentencesByRegex(String regex) {
+    @Override
+    public List<DocumentSentence> getSentencesByRegex(final String regex) {
         final Pattern pattern = Pattern.compile(regex);
         final List<DocumentSentence> results = new ArrayList<>();
         for(DocumentSentence result : sentenceTable) {
@@ -38,15 +42,19 @@ public class MockSentenceDao extends SentenceDao
         return results;
     }
 
-    public DocumentSentence getSentenceById(long id) {
+    @Override
+    public DocumentSentence getSentenceById(final long id) {
         return sentenceTable.get((int)id);
     }
 
-    public int deleteSentenceById(long id) {
+    @Override
+    public int deleteSentenceById(final long id) {
         sentenceTable.remove(id);
         return 1;
     }
-    public int deleteSentencesByDocumentId(long documentId) {
+
+    @Override
+    public int deleteSentencesByDocumentId(final long documentId) {
         for(DocumentSentence result : sentenceTable) {
             if(result.documentId() == documentId) {
                 sentenceTable.remove(result);
@@ -55,6 +63,7 @@ public class MockSentenceDao extends SentenceDao
         return 1;
     }
 
+    @Override
     public int clearAll() {
         sentenceTable.clear();
         return 1;

@@ -14,14 +14,18 @@ import java.util.stream.Collectors;
 import static java.lang.Math.min;
 
 import com.ibm.icu.text.BreakIterator;
+import com.textStatisticsApp.Dao.DocumentDao;
+import com.textStatisticsApp.Dao.MockDocumentDao;
 import com.textStatisticsApp.Dao.MockSentenceDao;
 import com.textStatisticsApp.Dao.SentenceDao;
 
 public class SearchService
 {
     private SentenceDao sentenceDao;
+    private DocumentDao documentDao;
     public SearchService() {
         sentenceDao = new MockSentenceDao();
+        documentDao = new MockDocumentDao();
     }
 
     // takes a regex query and returns a set of data and statistics
@@ -51,7 +55,7 @@ public class SearchService
 
     public void addDocument(String name, String text) {
         //add document
-        long documentId = 0;
+        long documentId = documentDao.addDocument(name);
 
         String[] sentenceCandidates = text.split("[。.!?\n]");
         List<SentenceDao.DocumentSentenceInput> sentences = new ArrayList<>();
