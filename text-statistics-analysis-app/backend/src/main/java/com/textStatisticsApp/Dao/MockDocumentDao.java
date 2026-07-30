@@ -3,6 +3,9 @@ package com.textStatisticsApp.Dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
+@Repository
 public class MockDocumentDao extends DocumentDao {
     private List<Document> documentTable;
 
@@ -17,6 +20,11 @@ public class MockDocumentDao extends DocumentDao {
     }
 
     @Override
+    public List<Document> getDocuments() {
+        return documentTable;
+    }
+
+    @Override
     public Document getDocumentById(final long id) {
         return documentTable.get((int)id);
     }
@@ -28,7 +36,7 @@ public class MockDocumentDao extends DocumentDao {
     }
 
     @Override
-    public int clearAll() {
+    public int deleteDocuments() {
         documentTable.clear();
         return 1;
     }

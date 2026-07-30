@@ -1,25 +1,31 @@
-package com.textStatisticsApp;
+package com.textStatisticsApp.Service;
 
-import com.textStatisticsApp.Dao.DocumentDao;
+import java.util.List;
+
 import com.textStatisticsApp.Dao.ProjectDao;
 import com.textStatisticsApp.Dao.ProjectDocumentDao;
-import com.textStatisticsApp.Dao.SentenceDao;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ProjectService {
-    private SentenceDao sentenceDao;
-    private DocumentDao documentDao;
-    private ProjectDocumentDao projectDocumentDao;
-    private ProjectDao projectDao;
+    private final ProjectDocumentDao projectDocumentDao;
+    private final ProjectDao projectDao;
 
-    public ProjectService(SentenceDao sentenceDao, DocumentDao documentDao, ProjectDocumentDao projectDocumentDao, ProjectDao projectDao) {
-        this.sentenceDao = sentenceDao;
-        this.documentDao = documentDao;
+    public ProjectService(ProjectDocumentDao projectDocumentDao, ProjectDao projectDao) {
         this.projectDocumentDao = projectDocumentDao;
         this.projectDao = projectDao;
     }
 
-    public void createProject(String name) {
-        projectDao.addProject(name);
+    public List<ProjectDao.Project> getProjects() {
+        return projectDao.getProjects();
+    }
+
+    public ProjectDao.Project getProjectById(long projectId) {
+        return projectDao.getProjectById(projectId);
+    }
+
+    public int createProject(String name) {
+        return projectDao.addProject(name);
     }
 
     public void addDocumentToProject(long projectId, long documentId) {

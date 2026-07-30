@@ -1,4 +1,4 @@
-package com.textStatisticsApp;
+package com.textStatisticsApp.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,18 +14,14 @@ import java.util.stream.Collectors;
 import static java.lang.Math.min;
 
 import com.ibm.icu.text.BreakIterator;
-import com.textStatisticsApp.Dao.DocumentDao;
-import com.textStatisticsApp.Dao.MockDocumentDao;
-import com.textStatisticsApp.Dao.MockSentenceDao;
 import com.textStatisticsApp.Dao.SentenceDao;
+import org.springframework.stereotype.Service;
 
-public class SearchService
-{
+@Service
+public class SearchService {
     private SentenceDao sentenceDao;
-    private DocumentDao documentDao;
-    public SearchService() {
-        sentenceDao = new MockSentenceDao();
-        documentDao = new MockDocumentDao();
+    public SearchService(SentenceDao sentenceDao) {
+        this.sentenceDao = sentenceDao;
     }
 
     // takes a regex query and returns a set of data and statistics
@@ -51,20 +47,6 @@ public class SearchService
                                                       getNgramCounts(sentences, 2),
                                                       getNgramCounts(sentences, 3));
         return results;
-    }
-
-    public void addDocument(String name, String text) {
-        //add document
-        long documentId = documentDao.addDocument(name);
-
-        String[] sentenceCandidates = text.split("[。.!?\n]");
-        List<SentenceDao.DocumentSentenceInput> sentences = new ArrayList<>();
-        for(String sentence: sentenceCandidates) {
-            if(!sentence.isBlank()) {
-                sentences.add(new SentenceDao.DocumentSentenceInput(documentId, sentence));
-            }
-        }
-        sentenceDao.addSentences(sentences);
     }
 
     // takes a set of snippets found and counts the appearance of each character in them

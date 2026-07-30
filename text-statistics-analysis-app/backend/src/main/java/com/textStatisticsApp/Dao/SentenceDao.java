@@ -15,7 +15,7 @@ public abstract class SentenceDao  {
     public abstract int deleteSentenceById(long id);
     public abstract int deleteSentencesByDocumentId(long documentId);
 
-    public abstract int clearAll();
+    public abstract int deleteSentences();
 
     public record DocumentSentence(long sentenceId, long documentId, String sentence) {}
     public record DocumentSentenceInput(long documentId, String sentence) {}

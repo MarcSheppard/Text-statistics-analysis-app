@@ -3,6 +3,9 @@ package com.textStatisticsApp.Dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
+@Repository
 public class MockProjectDocumentDao extends ProjectDocumentDao {
     private List<ProjectDocument> projectDocumentTable;
 

@@ -2,14 +2,20 @@ package com.textStatisticsApp.Dao;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
+@Repository
 public class MockProjectDao extends ProjectDao {
     private List<Project> projectTable;
 
     @Override
-    public long addProject(final String name) {
+    public int addProject(final String name) {
         projectTable.add(new Project(projectTable.size(), name));
-        return projectTable.size() - 1;
+        return 1;
     }
+
+    @Override
+    public List<Project> getProjects() { return projectTable; }
 
     @Override
     public Project getProjectById(final long id) {

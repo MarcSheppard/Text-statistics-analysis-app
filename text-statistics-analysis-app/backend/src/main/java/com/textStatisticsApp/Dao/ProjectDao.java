@@ -1,9 +1,13 @@
 package com.textStatisticsApp.Dao;
 
+import java.util.List;
+
 public abstract class ProjectDao {
     public ProjectDao() {}
 
-    public abstract long addProject(String name);
+    public abstract int addProject(String name);
+
+    public abstract List<Project> getProjects();
 
     public abstract Project getProjectById(long id);
 

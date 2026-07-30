@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.stereotype.Repository;
+
+@Repository
 public class MockSentenceDao extends SentenceDao
 {
     private List<DocumentSentence> sentenceTable;
@@ -64,7 +67,7 @@ public class MockSentenceDao extends SentenceDao
     }
 
     @Override
-    public int clearAll() {
+    public int deleteSentences() {
         sentenceTable.clear();
         return 1;
     }
