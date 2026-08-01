@@ -1,5 +1,6 @@
 package com.textStatisticsApp.Dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -7,6 +8,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MockProjectDao extends ProjectDao {
     private List<Project> projectTable;
+
+    public MockProjectDao() {
+        projectTable = new ArrayList<>();
+    }
 
     @Override
     public int addProject(final String name) {
