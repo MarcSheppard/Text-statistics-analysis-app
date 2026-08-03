@@ -9,7 +9,7 @@ public abstract class SentenceDao  {
     public abstract int addSentence(DocumentSentenceInput sentence);
     public abstract int addSentences(List<DocumentSentenceInput> sentences);
 
-    public abstract List<DocumentSentence> getSentencesByRegex(String regex);
+    public abstract List<DocumentSentence> getSentencesByRegex(String regex, List<Long> documentIds);
     public abstract DocumentSentence getSentenceById(long id);
 
     public abstract int deleteSentenceById(long id);

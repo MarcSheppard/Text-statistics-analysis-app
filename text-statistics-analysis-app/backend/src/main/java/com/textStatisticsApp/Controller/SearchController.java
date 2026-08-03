@@ -22,7 +22,7 @@ public class SearchController
     }
 
     @GetMapping("/getResults")
-    public SearchService.AnalysisResults getResults(@RequestParam String query) {
-        return searchService.getResults(query);
+    public SearchService.AnalysisResults getResults(@RequestParam String query, @RequestParam Long projectId) {
+        return searchService.getResults(query, projectId);
     }
 }

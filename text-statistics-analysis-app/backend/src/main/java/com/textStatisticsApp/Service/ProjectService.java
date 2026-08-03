@@ -24,6 +24,10 @@ public class ProjectService {
         return projectDao.getProjectById(projectId);
     }
 
+    public List<ProjectDocumentDao.ProjectDocument> getProjectDocuments(long projectId) {
+        return projectDocumentDao.getProjectDocumentsByProjectId(projectId);
+    }
+
     public int createProject(String name) {
         return projectDao.addProject(name);
     }

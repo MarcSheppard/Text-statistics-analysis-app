@@ -33,10 +33,11 @@ public class MockSentenceDao extends SentenceDao
     }
 
     @Override
-    public List<DocumentSentence> getSentencesByRegex(final String regex) {
+    public List<DocumentSentence> getSentencesByRegex(final String regex, final List<Long> documentIds) {
         final Pattern pattern = Pattern.compile(regex);
         final List<DocumentSentence> results = new ArrayList<>();
         for(DocumentSentence result : sentenceTable) {
+            if(!documentIds.contains(result.documentId())) { continue; }
             final Matcher matcher = pattern.matcher(result.sentence());
             if(matcher.find())  {
                 results.add(result);

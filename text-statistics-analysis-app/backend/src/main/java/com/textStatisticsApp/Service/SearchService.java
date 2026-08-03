@@ -14,21 +14,26 @@ import java.util.stream.Collectors;
 import static java.lang.Math.min;
 
 import com.ibm.icu.text.BreakIterator;
+import com.textStatisticsApp.Dao.ProjectDocumentDao;
 import com.textStatisticsApp.Dao.SentenceDao;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SearchService {
     private SentenceDao sentenceDao;
-    public SearchService(SentenceDao sentenceDao) {
+    private ProjectDocumentDao projectDocumentDao;
+    public SearchService(SentenceDao sentenceDao, ProjectDocumentDao projectDocumentDao) {
         this.sentenceDao = sentenceDao;
+        this.projectDocumentDao = projectDocumentDao;
     }
 
     // takes a regex query and returns a set of data and statistics
-    public AnalysisResults getResults(String query) {
-        List<SentenceDao.DocumentSentence> sentences = sentenceDao.getSentencesByRegex(query);
+    public AnalysisResults getResults(String query, long projectId) {
+        List<ProjectDocumentDao.ProjectDocument> projectDocuments = projectDocumentDao.getProjectDocumentsByProjectId(projectId);
+        List<Long> projectDocumentIds = projectDocuments.stream().map(ProjectDocumentDao.ProjectDocument::documentId).toList();
+        List<SentenceDao.DocumentSentence> sentences = sentenceDao.getSentencesByRegex(query, projectDocumentIds);
 
-        HashSet<Long> documentIds = new HashSet<>();
+        HashSet<Long> resultDocumentIds = new HashSet<>();
         List<SearchResult> snippets = new ArrayList<>();
         final Pattern pattern = Pattern.compile(query);
         for(SentenceDao.DocumentSentence sentence : sentences) {
@@ -38,10 +43,10 @@ public class SearchService {
                 queryMarks.add(new QueryMark(matcher.start(), matcher.end()));
             }
             snippets.add(new SearchResult(sentence.sentenceId(), sentence.documentId(), sentence.sentence(), queryMarks));
-            documentIds.add(sentence.documentId());
+            resultDocumentIds.add(sentence.documentId());
         }
 
-        GeneralSearchStatistics statistics = new GeneralSearchStatistics(snippets.size(), documentIds.size());
+        GeneralSearchStatistics statistics = new GeneralSearchStatistics(snippets.size(), resultDocumentIds.size());
         AnalysisResults results = new AnalysisResults(statistics, snippets, getCharacterCounts(sentences),
                                                       getNgramCounts(sentences, 1),
                                                       getNgramCounts(sentences, 2),

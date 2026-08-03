@@ -3,6 +3,7 @@ package com.textStatisticsApp.Controller;
 import java.util.List;
 
 import com.textStatisticsApp.Dao.ProjectDao;
+import com.textStatisticsApp.Dao.ProjectDocumentDao;
 import com.textStatisticsApp.Service.ProjectService;
 import org.apache.catalina.connector.Response;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,6 +30,11 @@ public class ProjectController
     @GetMapping("/getProjectById")
     public ProjectDao.Project getProjectById(@RequestParam long projectId) {
         return projectService.getProjectById(projectId);
+    }
+
+    @GetMapping("/getProjectDocuments")
+    public List<ProjectDocumentDao.ProjectDocument> getProjectDocuments(@RequestParam long projectId) {
+        return projectService.getProjectDocuments(projectId);
     }
 
     @PostMapping("/createProject")
