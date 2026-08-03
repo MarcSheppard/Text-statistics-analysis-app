@@ -22,14 +22,19 @@ export async function getProjectsDocuments(projectId: string): Promise<Document[
 export default function ProjectPage() {
     const { projectId } = useParams();
 
-    const [documents, setDocuments] = useState<Document[]>([
-        { id: 1, name: "Document 1" },
-        { id: 2, name: "Document 2" },
-        { id: 3, name: "Document 3" },
-    ]);
+    const [projectName, setProjectName] = useState<string>("");
+    const [documents, setDocuments] = useState<Document[]>([]);
     const [projectDocuments, setProjectDocuments] = useState<Document[]>([]);
 
     useEffect(() => {
+        async function fetchProjectName() {
+            const response = await fetch(`http://localhost:8080/getProjectById?projectId=${encodeURIComponent(projectId!)}`);
+            if (response.ok) {
+                const data = await response.json();
+                setProjectName(data.name);
+            }
+        }
+        fetchProjectName();
         getDocuments().then(setDocuments);
         getProjectsDocuments(projectId!).then(setProjectDocuments);
     }, [projectId]);
@@ -42,17 +47,26 @@ export default function ProjectPage() {
                 prev.filter(d => d.id !== document.id)
             );
         }
+        // Update the backend
+        if(checked) {
+            fetch(`http://localhost:8080/addDocumentToProject?projectId=${encodeURIComponent(projectId!)}&documentId=${encodeURIComponent(document.id)}`, {
+                method: "POST"
+            });
+        } else {
+            fetch(`http://localhost:8080/removeDocumentFromProject?projectId=${encodeURIComponent(projectId!)}&documentId=${encodeURIComponent(document.id)}`, {
+                method: "POST"
+            });
+        }
     }
 
     return (
     <>
-        <h1>Test: {projectId}</h1>
+        <h1>{projectName}</h1>
         <Link to="/">Home</Link>
         <Link to={`/search/${projectId}`}>Search</Link>
         <section>
             <h2>Documents</h2>
             <DocumentsList documents={documents} projectDocuments={projectDocuments} onToggle={handleToggle} />
-            <UploadChangesInput/>
             <UploadFileInput/>
         </section>
     </>
@@ -77,26 +91,6 @@ function DocumentsList({documents, projectDocuments, onToggle}: {documents: Docu
                 );
             })}
         </>
-    );
-}
-
-export function UploadChangesInput() {
-    async function upload() {
-        const formData = new FormData();
-        const response = await fetch("http://localhost:8080/uploadProjectDocuments", {
-        method: "POST",
-        body: formData,
-        });
-
-        if (response.ok) {
-            alert("Upload successful!");
-        } else {
-            alert("Upload failed.");
-        }
-    }
-
-    return (
-        <button onClick={upload}>Upload changes</button>
     );
 }
 

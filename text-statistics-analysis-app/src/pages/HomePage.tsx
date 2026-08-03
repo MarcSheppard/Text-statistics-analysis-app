@@ -13,11 +13,7 @@ export async function getProjects(): Promise<Project[]> {
 }
 
 export default function HomePage() {
-    const [projects, setProjects] = useState<Project[]>([
-        { id: 1, name: "Project 1" },
-        { id: 2, name: "Project 2" },
-        { id: 3, name: "Project 3" },
-    ]);
+    const [projects, setProjects] = useState<Project[]>([]);
 
     useEffect(() => {
         getProjects().then(setProjects);
@@ -52,7 +48,7 @@ function AddProjectInput() {
     async function upload() {
         if(name == "") return;
 
-        const response = await fetch(`http://localhost:8080/AddProject/name=${encodeURIComponent(name)}`, {method: "POST"});
+        const response = await fetch(`http://localhost:8080/createProject?name=${encodeURIComponent(name)}`, {method: "POST"});
         if (response.ok) {
             alert("Added project successfully!");
         } else {
