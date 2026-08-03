@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import './App.css'
 
@@ -41,6 +41,7 @@ export async function getSearchResults(query: string): Promise<SearchResults> {
 function App() {
   const { projectId } = useParams();
 
+  const [projectName, setProjectName] = useState<string>("");
   const [searchText, setSearchText] = useState<string>("");
   const [searchStatistics, setSearchStatistics] = useState<GeneralSearchStatistics>({
     numResults: 0,
@@ -51,6 +52,17 @@ function App() {
   const [wordCounts, setWordCounts] = useState<CountEntry[]>([]);
   const [bigramCounts, setBigramCounts] = useState<CountEntry[]>([]);
   const [trigramCounts, setTrigramCounts] = useState<CountEntry[]>([]);
+
+  useEffect(() => {
+    async function fetchProjectName() {
+      const response = await fetch(`http://localhost:8080/getProjectById?projectId=${encodeURIComponent(projectId!)}`);
+      if (response.ok) {
+        const data = await response.json();
+        setProjectName(data.name);
+      }
+    }
+    fetchProjectName();
+  }, [projectId]);
 
   async function handleSearch() {
     const results = await getSearchResults(searchText);
@@ -65,7 +77,7 @@ function App() {
   return (
     <>
       <Link className=".homeBtn" to="/">Home</Link>
-      <h1>Project Name: {projectId}</h1>
+      <h1>{projectName}</h1>
       <section>
         <input
           value={searchText}
@@ -79,8 +91,6 @@ function App() {
           }}
         />
         <button onClick={handleSearch}>Search</button>
-        <UploadFile/>
-        <ClearTextDataButton/>
       </section>
       <div className="content">
         <section>
@@ -171,53 +181,6 @@ function FrequencyList({ counts }: { counts: CountEntry[]; }) {
       ))}
     </div>
   );
-}
-
-export function UploadFile() {
-  const [file, setFile] = useState<File | null>(null);
-
-  async function upload() {
-    if(!file) return;
-
-    const formData = new FormData();
-    formData.append("file", file);
-    const response = await fetch("http://localhost:8080/upload", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (response.ok) {
-      alert("Upload successful!");
-      setFile(null);
-    } else {
-      alert("Upload failed.");
-    }
-  }
-
-  return (
-    <>
-      <button onClick={upload} disabled={!file}>Upload</button>
-      <input
-        type="file"
-        accept=".txt"
-        onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-      />
-    </>
-  );
-}
-
-export function ClearTextDataButton() {
-  async function clear() {
-    const response = await fetch("http://localhost:8080/clear", { method: "GET",});
-
-    if (response.ok) {
-      alert("Text data clear successful!");
-    } else {
-      alert("Text data clear failed.");
-    }
-  }
-
-  return (<button onClick={clear}>Clear text data</button>);
 }
 
 export default App
