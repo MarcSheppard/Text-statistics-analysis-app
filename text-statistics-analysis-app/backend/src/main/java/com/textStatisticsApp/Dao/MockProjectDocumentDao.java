@@ -63,22 +63,15 @@ public class MockProjectDocumentDao extends ProjectDocumentDao {
 
     @Override
     public int deleteProjectDocumentByDocumentId(final long documentId) {
-        for(ProjectDocument projectDocument : projectDocumentTable) {
-            if(projectDocument.documentId() == documentId) {
-                projectDocumentTable.remove(projectDocument);
-            }
-        }
+        projectDocumentTable.removeIf(projectDocument -> projectDocument.documentId() == documentId);
         return 1;
     }
 
 
     @Override
     public int deleteProjectDocument(final long projectId, final long documentId) {
-        for(ProjectDocument projectDocument : projectDocumentTable) {
-            if(projectDocument.projectId() == projectId && projectDocument.documentId() == documentId) {
-                projectDocumentTable.remove(projectDocument);
-            }
-        }
+        projectDocumentTable.removeIf(projectDocument -> projectDocument.documentId() == documentId &&
+                                                           projectDocument.projectId() == projectId);
         return 1;
     }
 
