@@ -15,6 +15,34 @@ export async function getProjects(): Promise<Project[]> {
 export default function HomePage() {
     const [projects, setProjects] = useState<Project[]>([]);
 
+    function AddProjectInput() {
+        const [name, setName] = useState<string>("");
+
+        async function upload() {
+            if(name == "") return;
+
+            const response = await fetch(`http://localhost:8080/createProject?name=${encodeURIComponent(name)}`, {method: "POST"});
+            if (response.ok) {
+                getProjects().then(setProjects);
+            } else {
+                alert("Failed to add project.");
+            }
+        }
+
+        return (
+            <>
+                <input type="text" placeholder="New project name" value={name || ""} 
+                onChange={(e) => setName(e.target.value)} 
+                onKeyDown={(e) => {
+                    if(e.key === "Enter") {
+                        upload();
+                    }
+                }}/>
+                <button disabled={!name.trim()} onClick={upload}>Add Project</button>
+            </>
+        )
+    }
+
     useEffect(() => {
         getProjects().then(setProjects);
     }, []);
@@ -40,26 +68,4 @@ function ProjectsList({ projects }: { projects: Project[] }) {
             </section>
         ]))
     );
-}
-
-function AddProjectInput() {
-    const [name, setName] = useState<string>("");
-
-    async function upload() {
-        if(name == "") return;
-
-        const response = await fetch(`http://localhost:8080/createProject?name=${encodeURIComponent(name)}`, {method: "POST"});
-        if (response.ok) {
-            alert("Added project successfully!");
-        } else {
-            alert("Failed to add project.");
-        }
-    }
-
-    return (
-        <>
-            <input type="text" placeholder="New project name" value={name || ""} onChange={(e) => setName(e.target.value)}/>
-            <button disabled={!name.trim()} onClick={upload}>Add Project</button>
-        </>
-    )
 }

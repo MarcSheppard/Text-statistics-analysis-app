@@ -32,8 +32,8 @@ type SearchResults = {
   trigramCounts: CountEntry[];
 }
 
-export async function getSearchResults(query: string): Promise<SearchResults> {
-  const response = await fetch(`http://localhost:8080/getResults?query=${encodeURIComponent(query)}`);
+export async function getSearchResults(query: string, projectId: string): Promise<SearchResults> {
+  const response = await fetch(`http://localhost:8080/getResults?query=${encodeURIComponent(query)}&projectId=${encodeURIComponent(projectId)}`);
   const data: SearchResults = await response.json();
   return data;
 }
@@ -65,7 +65,7 @@ function App() {
   }, [projectId]);
 
   async function handleSearch() {
-    const results = await getSearchResults(searchText);
+    const results = await getSearchResults(searchText, projectId!);
     setSearchStatistics(results.generalStatistics);
     setResults(results.snippets);
     setCharacterCounts(results.characterCounts);
