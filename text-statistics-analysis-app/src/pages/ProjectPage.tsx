@@ -59,9 +59,16 @@ export default function ProjectPage() {
             });
         } else {
             fetch(`http://localhost:8080/removeDocumentFromProject?projectId=${encodeURIComponent(projectId!)}&documentId=${encodeURIComponent(documentId)}`, {
-                method: "POST"
+                method: "DELETE"
             });
         }
+    }
+
+    function deleteDocument(documentId: number) {
+        fetch(`http://localhost:8080/deleteDocumentById?documentId=${encodeURIComponent(documentId)}`, {method: "DELETE"})
+        .then(() => {
+            getDocuments().then(setDocuments);
+        });
     }
 
     function UploadFileInput() {
@@ -104,14 +111,14 @@ export default function ProjectPage() {
         <Link to={`/search/${projectId}`}>Search</Link>
         <section>
             <h2>Documents</h2>
-            <DocumentsList documents={documents} projectDocuments={projectDocuments} onToggle={handleToggle} />
+            <DocumentsList documents={documents} projectDocuments={projectDocuments} onToggle={handleToggle} deleteDocument={deleteDocument} />
             <UploadFileInput/>
         </section>
     </>
     );
 }
 
-function DocumentsList({documents, projectDocuments, onToggle}: {documents: Document[]; projectDocuments: ProjectDocument[]; onToggle: (documentId: number, checked: boolean) => void}) {
+function DocumentsList({documents, projectDocuments, onToggle, deleteDocument}: {documents: Document[]; projectDocuments: ProjectDocument[]; onToggle: (documentId: number, checked: boolean) => void; deleteDocument: (documentId: number) => void}) {
     return (
         <>
             {documents.map(document => {
@@ -124,6 +131,9 @@ function DocumentsList({documents, projectDocuments, onToggle}: {documents: Docu
                         <label>
                             {document.name}
                             <input type="checkbox" checked={checked} onChange={(e) => onToggle(document.id, e.target.checked)}/>
+                            <button onClick={() => {deleteDocument(document.id)}}>
+                                Delete
+                            </button>
                         </label>
                     </section>
                 );

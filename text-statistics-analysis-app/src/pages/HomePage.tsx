@@ -43,6 +43,21 @@ export default function HomePage() {
         )
     }
 
+    function ProjectsList({ projects }: { projects: Project[] }) {
+    return (
+        projects.map((project, index) => ([
+            <section>
+                <Link key={index * 2} to={`/search/${project.id}`}>{project.name}</Link>
+                <Link key={index * 2 + 1} to={`/projects/${project.id}`}>Edit</Link>
+                <button onClick={() => {
+                    fetch(`http://localhost:8080/deleteProject?projectId=${encodeURIComponent(project.id)}`, {method: "DELETE"})
+                    .then(() => getProjects().then(setProjects));
+                }}>Delete</button>
+            </section>
+        ]))
+    );
+}
+
     useEffect(() => {
         getProjects().then(setProjects);
     }, []);
@@ -56,16 +71,5 @@ export default function HomePage() {
             <AddProjectInput/>
         </section>
     </>
-    );
-}
-
-function ProjectsList({ projects }: { projects: Project[] }) {
-    return (
-        projects.map((project, index) => ([
-            <section>
-                <Link key={index * 2} to={`/search/${project.id}`}>{project.name}</Link>
-                <Link key={index * 2 + 1} to={`/projects/${project.id}`}>Edit</Link>
-            </section>
-        ]))
     );
 }
