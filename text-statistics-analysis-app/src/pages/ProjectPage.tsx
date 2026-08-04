@@ -111,7 +111,7 @@ export default function ProjectPage() {
     );
 }
 
-function DocumentsList({documents, projectDocuments, onToggle}: {documents: Document[]; projectDocuments: ProjectDocument[]; onToggle: (document: Document, checked: boolean) => void}) {
+function DocumentsList({documents, projectDocuments, onToggle}: {documents: Document[]; projectDocuments: ProjectDocument[]; onToggle: (documentId: number, checked: boolean) => void}) {
     return (
         <>
             {documents.map(document => {
