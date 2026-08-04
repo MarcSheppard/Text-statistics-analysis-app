@@ -8,6 +8,7 @@ import com.textStatisticsApp.Service.DocumentService;
 import org.apache.catalina.connector.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,14 +41,14 @@ public class DocumentController {
         return ResponseEntity.ok("File uploaded.");
     }
 
-    @PostMapping("/deleteDocumentById")
+    @DeleteMapping("/deleteDocumentById")
     public int deleteDocumentById(@RequestParam long documentId) {
         documentService.deleteDocumentById(documentId);
         return Response.SC_OK;
     }
 
-    @PostMapping("/deleteAllDocumentsById")
-    public int deleteAllDocuments(@RequestParam long projectId) {
+    @DeleteMapping("/deleteAllDocuments")
+    public int deleteAllDocuments() {
         documentService.deleteAllDocuments();
         return Response.SC_OK;
     }

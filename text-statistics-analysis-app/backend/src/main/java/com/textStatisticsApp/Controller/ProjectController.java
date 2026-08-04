@@ -7,6 +7,7 @@ import com.textStatisticsApp.Dao.ProjectDocumentDao;
 import com.textStatisticsApp.Service.ProjectService;
 import org.apache.catalina.connector.Response;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,9 +44,9 @@ public class ProjectController
         return Response.SC_OK;
     }
 
-    @PostMapping("/deleteProject")
-    public int deleteProject(@RequestParam String name) {
-        projectService.createProject(name);
+    @DeleteMapping("/deleteProject")
+    public int deleteProject(@RequestParam long projectId) {
+        projectService.deleteProject(projectId);
         return Response.SC_OK;
     }
 
@@ -55,7 +56,7 @@ public class ProjectController
         return Response.SC_OK;
     }
 
-    @PostMapping("/removeDocumentFromProject")
+    @DeleteMapping("/removeDocumentFromProject")
     public int removeDocumentFromProject(@RequestParam long projectId, @RequestParam long documentId) {
         projectService.removeDocumentFromProject(projectId, documentId);
         return Response.SC_OK;

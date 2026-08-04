@@ -32,6 +32,10 @@ public class ProjectService {
         return projectDao.addProject(name);
     }
 
+    public int deleteProject(long projectId) {
+        return projectDao.deleteProjectById(projectId);
+    }
+
     public void addDocumentToProject(long projectId, long documentId) {
         projectDocumentDao.addProjectDocument(projectId, documentId);
     }

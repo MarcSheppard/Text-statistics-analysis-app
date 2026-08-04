@@ -59,11 +59,7 @@ public class MockSentenceDao extends SentenceDao
 
     @Override
     public int deleteSentencesByDocumentId(final long documentId) {
-        for(DocumentSentence result : sentenceTable) {
-            if(result.documentId() == documentId) {
-                sentenceTable.remove(result);
-            }
-        }
+        sentenceTable.removeIf(sentence -> sentence.documentId() == documentId);
         return 1;
     }
 
