@@ -106,14 +106,18 @@ export default function ProjectPage() {
 
     return (
     <>
-        <h1>{projectName}</h1>
-        <Link to="/">Home</Link>
-        <Link to={`/search/${projectId}`}>Search</Link>
-        <section>
-            <h2>Documents</h2>
-            <DocumentsList documents={documents} projectDocuments={projectDocuments} onToggle={handleToggle} deleteDocument={deleteDocument} />
-            <UploadFileInput/>
-        </section>
+        <div className="page">
+            <section className="page-header">
+                <h1 className="project-page-title">{projectName}</h1>
+                <Link className="header-link" to={`/search/${projectId}`}>Analysis</Link>
+                <Link className="header-link" to="/">Projects</Link>
+            </section>
+            <section>
+                <h2>Documents</h2>
+                <DocumentsList documents={documents} projectDocuments={projectDocuments} onToggle={handleToggle} deleteDocument={deleteDocument} />
+                <UploadFileInput/>
+            </section>
+        </div>
     </>
     );
 }

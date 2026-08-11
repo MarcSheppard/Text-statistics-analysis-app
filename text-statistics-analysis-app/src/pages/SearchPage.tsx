@@ -76,8 +76,11 @@ function App() {
 
   return (
     <>
-      <Link className=".homeBtn" to="/">Home</Link>
-      <h1>{projectName}</h1>
+      <div className="page-header">
+        <Link className="header-link" to="/">Projects</Link>
+        <h1 className="page-title">{projectName}</h1>
+        <Link className="header-link" to={`/projects/${projectId}`}>Documents</Link>
+      </div>
       <section>
         <input
           value={searchText}

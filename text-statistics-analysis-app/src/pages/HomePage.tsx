@@ -46,10 +46,10 @@ export default function HomePage() {
     function ProjectsList({ projects }: { projects: Project[] }) {
     return (
         projects.map((project, index) => ([
-            <section>
-                <Link key={index * 2} to={`/search/${project.id}`}>{project.name}</Link>
-                <Link key={index * 2 + 1} to={`/projects/${project.id}`}>Edit</Link>
-                <button onClick={() => {
+            <section key={index * 4} className="project-entry">
+                <Link key={index * 4 + 1} className="project-link" to={`/search/${project.id}`}>{project.name}</Link>
+                <Link key={index * 4 + 2} className="project-link" to={`/projects/${project.id}`}>Edit</Link>
+                <button key={index * 4 + 3} className="delete-project-button" onClick={() => {
                     fetch(`http://localhost:8080/deleteProject?projectId=${encodeURIComponent(project.id)}`, {method: "DELETE"})
                     .then(() => getProjects().then(setProjects));
                 }}>Delete</button>
@@ -64,7 +64,7 @@ export default function HomePage() {
 
     return (
     <>
-        <h1>Main page</h1>
+        <h1>Text Analysis</h1>
         <section>
             <h2>Projects</h2>
             <ProjectsList projects={projects}/>
