@@ -11,23 +11,27 @@ import org.springframework.stereotype.Repository;
 public class MockSentenceDao extends SentenceDao
 {
     private List<DocumentSentence> sentenceTable;
+    private long idCount;
 
     public MockSentenceDao() {
         sentenceTable = new ArrayList<>();
+        idCount = 0;
     }
 
     @Override
     public int addSentence(final DocumentSentenceInput sentence) {
-        DocumentSentence snippet = new DocumentSentence(sentenceTable.size(), sentence.documentId(), sentence.sentence());
+        DocumentSentence snippet = new DocumentSentence(idCount, sentence.documentId(), sentence.sentence());
         sentenceTable.add(snippet);
+        idCount++;
         return 1;
     }
 
     @Override
     public int addSentences(final List<DocumentSentenceInput> sentences) {
         for(DocumentSentenceInput sentence : sentences) {
-            DocumentSentence snippet = new DocumentSentence(sentenceTable.size(), sentence.documentId(), sentence.sentence());
+            DocumentSentence snippet = new DocumentSentence(idCount, sentence.documentId(), sentence.sentence());
             sentenceTable.add(snippet);
+            idCount++;
         }
         return 1;
     }
@@ -48,13 +52,20 @@ public class MockSentenceDao extends SentenceDao
 
     @Override
     public DocumentSentence getSentenceById(final long id) {
-        return sentenceTable.get((int)id);
+        int index = 0;
+        for(DocumentSentence sentence: sentenceTable) {
+            if(sentence.sentenceId() == id) {
+                return sentenceTable.get(index);
+            }
+            index++;
+        }
+        return null;
     }
 
     @Override
     public int deleteSentenceById(final long id) {
-        sentenceTable.remove(id);
-        return 1;
+        sentenceTable.removeIf(sentence -> sentence.sentenceId() == id);
+        return 0;
     }
 
     @Override

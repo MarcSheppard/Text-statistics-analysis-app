@@ -8,14 +8,17 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MockProjectDao extends ProjectDao {
     private List<Project> projectTable;
+    private long idCount;
 
     public MockProjectDao() {
         projectTable = new ArrayList<>();
+        idCount = 0;
     }
 
     @Override
     public int addProject(final String name) {
-        projectTable.add(new Project(projectTable.size(), name));
+        projectTable.add(new Project(idCount, name));
+        idCount++;
         return 1;
     }
 
@@ -24,12 +27,19 @@ public class MockProjectDao extends ProjectDao {
 
     @Override
     public Project getProjectById(final long id) {
-        return projectTable.get((int)id);
+        int index = 0;
+        for(Project project: projectTable) {
+            if(project.id() == id) {
+                return projectTable.get(index);
+            }
+            index++;
+        }
+        return null;
     }
 
     @Override
     public int deleteProjectById(final long id) {
-        projectTable.remove((int)id);
+        projectTable.removeIf(project -> project.id() == id);
         return 1;
     }
 

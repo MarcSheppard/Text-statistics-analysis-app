@@ -33,6 +33,7 @@ public class ProjectService {
     }
 
     public int deleteProject(long projectId) {
+        projectDocumentDao.deleteProjectDocumentByProjectId(projectId);
         return projectDao.deleteProjectById(projectId);
     }
 

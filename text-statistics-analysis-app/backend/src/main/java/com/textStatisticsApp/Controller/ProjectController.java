@@ -1,5 +1,6 @@
 package com.textStatisticsApp.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.textStatisticsApp.Dao.ProjectDao;
@@ -24,8 +25,12 @@ public class ProjectController
     }
 
     @GetMapping("/getProjects")
-    public List<ProjectDao.Project> getProjects() {
-        return projectService.getProjects();
+    public List<ProjectResponse> getProjects() {
+        List<ProjectResponse> response = new ArrayList<>();
+        for(ProjectDao.Project project : projectService.getProjects()) {
+            response.add(new ProjectResponse(Long.toString(project.id()), project.name()));
+        }
+        return response;
     }
 
     @GetMapping("/getProjectById")
@@ -34,8 +39,12 @@ public class ProjectController
     }
 
     @GetMapping("/getProjectDocuments")
-    public List<ProjectDocumentDao.ProjectDocument> getProjectDocuments(@RequestParam long projectId) {
-        return projectService.getProjectDocuments(projectId);
+    public List<ProjectDocumentResponse> getProjectDocuments(@RequestParam long projectId) {
+        List<ProjectDocumentResponse> response = new ArrayList<ProjectDocumentResponse>();
+        for(ProjectDocumentDao.ProjectDocument document : projectService.getProjectDocuments(projectId)) {
+            response.add(new ProjectDocumentResponse(Long.toString(document.projectId()), Long.toString(document.documentId())));
+        }
+        return response;
     }
 
     @PostMapping("/createProject")
@@ -67,4 +76,7 @@ public class ProjectController
         projectService.removeAllDocumentsFromProject(projectId);
         return Response.SC_OK;
     }
+
+    private record ProjectResponse(String id, String name) {}
+    private record ProjectDocumentResponse(String projectId, String documentId) {}
 }

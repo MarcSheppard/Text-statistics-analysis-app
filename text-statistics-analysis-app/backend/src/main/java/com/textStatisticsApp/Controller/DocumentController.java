@@ -1,6 +1,7 @@
 package com.textStatisticsApp.Controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.textStatisticsApp.Dao.DocumentDao;
@@ -25,8 +26,12 @@ public class DocumentController {
     }
 
     @GetMapping("/getDocuments")
-    public List<DocumentDao.Document> getDocuments() {
-        return documentService.getDocuments();
+    public List<DocumentResponse> getDocuments() {
+        List<DocumentResponse> responses = new ArrayList<>();
+        for(DocumentDao.Document document : documentService.getDocuments()) {
+            responses.add(new DocumentResponse(Long.toString(document.id()), document.name()));
+        }
+        return responses;
     }
 
     @GetMapping("/getDocumentById")
@@ -52,4 +57,6 @@ public class DocumentController {
         documentService.deleteAllDocuments();
         return Response.SC_OK;
     }
+
+    private record DocumentResponse(String id, String name) {}
 }
