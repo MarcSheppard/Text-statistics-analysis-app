@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
 type Document = {
-  id: number;
+  id: string;
   name: string;
 };
 
 type ProjectDocument = {
-    projectId: number;
-    documentId: number;
+    projectId: string;
+    documentId: string;
 }
 
 export async function getDocuments(): Promise<Document[]> {
@@ -44,9 +44,9 @@ export default function ProjectPage() {
         getProjectsDocuments(projectId!).then(setProjectDocuments);
     }, [projectId]);
 
-    function handleToggle(documentId: number, checked: boolean) {
+    function handleToggle(documentId: string, checked: boolean) {
         if(checked) {
-            setProjectDocuments(prev => [...prev, { projectId: Number(projectId), documentId }]);
+            setProjectDocuments(prev => [...prev, { projectId: projectId!, documentId }]);
         }else {
             setProjectDocuments(prev =>
                 prev.filter(d => d.documentId !== documentId)
@@ -64,7 +64,7 @@ export default function ProjectPage() {
         }
     }
 
-    function deleteDocument(documentId: number) {
+    function deleteDocument(documentId: string) {
         fetch(`http://localhost:8080/deleteDocumentById?documentId=${encodeURIComponent(documentId)}`, {method: "DELETE"})
         .then(() => {
             getDocuments().then(setDocuments);
@@ -122,7 +122,7 @@ export default function ProjectPage() {
     );
 }
 
-function DocumentsList({documents, projectDocuments, onToggle, deleteDocument}: {documents: Document[]; projectDocuments: ProjectDocument[]; onToggle: (documentId: number, checked: boolean) => void; deleteDocument: (documentId: number) => void}) {
+function DocumentsList({documents, projectDocuments, onToggle, deleteDocument}: {documents: Document[]; projectDocuments: ProjectDocument[]; onToggle: (documentId: string, checked: boolean) => void; deleteDocument: (documentId: string) => void}) {
     return (
         <>
             {documents.map(document => {
