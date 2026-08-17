@@ -1,73 +1,61 @@
-# React + TypeScript + Vite
+# Text Analysis Tool
+A web application for searching and analysing large collections of text. It supports text search, frequency analysis, n-gram analysis, and document/project management.
+Built with React, TypeScript, Java, Spring Boot.
+This project was made mainly as an exercise to familiarise myself with React and TypeScript.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+## Features
+-Create and manage projects
+-Upload and manage .txt files
+-Files can be assigned to projects
+-Use regular expressions to search for setences in project files
+-Highlight search matches in sentences
+-Character, word, bigram and trigram counts for search results
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## React Compiler
+## Screenshots
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Project management page
 
-## Expanding the ESLint configuration
+### Project page
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Search page
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Architecture
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Front end
+React and TypeScript
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### back end
+Spring Boot and Java
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Requirements
+- Java 21+
+- Node.js 24+
+- npm
+
+Currently uses mock DAOs with no database.
+
+
+## Running the application
+cd backend
+./mvnw spring-boot:run
+cd frontend
+npm install
+npm run dev
+Frontend: http://localhost:5173
+Backend:  http://localhost:8080
+
+
+## Furture addtions
+-database for data storage
+
+
+## potential additions
+-search result paging
+-users and authentication
+-input validation
+-additional statistics
+-comparing documents
