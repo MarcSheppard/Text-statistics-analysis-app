@@ -33,7 +33,13 @@ npm
 Currently uses mock DAOs with no database.
 
 ## Running the application
-cd backend ./mvnw spring-boot:run cd frontend npm install npm run dev Frontend: http://localhost:5173 Backend: http://localhost:8080
+cd text-statistics-analysis-app/backend 
+./mvnw spring-boot:run 
+cd text-statistics-analysis-app/src
+npm install 
+npm run dev 
+Frontend: http://localhost:5173 
+Backend: http://localhost:8080
 
 ## Furture addtions
 -database for data storage
